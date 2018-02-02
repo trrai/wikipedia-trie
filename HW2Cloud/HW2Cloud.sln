@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "HW2Cloud", "HW2Cloud\HW2Cloud.ccproj", "{31CE6342-E3A9-4F10-A973-FA01EC50FF88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole1", "WebRole1\WebRole1.csproj", "{F0943777-B87B-400C-9EA4-896D208C66B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31CE6342-E3A9-4F10-A973-FA01EC50FF88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31CE6342-E3A9-4F10-A973-FA01EC50FF88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31CE6342-E3A9-4F10-A973-FA01EC50FF88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31CE6342-E3A9-4F10-A973-FA01EC50FF88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0943777-B87B-400C-9EA4-896D208C66B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0943777-B87B-400C-9EA4-896D208C66B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0943777-B87B-400C-9EA4-896D208C66B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0943777-B87B-400C-9EA4-896D208C66B6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C7B8B451-EE83-4158-AAE3-C3F161807323}
+	EndGlobalSection
+EndGlobal
