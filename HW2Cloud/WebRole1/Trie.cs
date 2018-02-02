@@ -8,13 +8,17 @@ namespace WebRole1
 {
     public class Trie
     {
+        // Root node for Trie
         private TrieNode rootNode;
 
+        //Constructor
         public Trie()
         {
+            //Set root to ^
             rootNode = new TrieNode(null, '^', 0);
         }
 
+        //Method that takes in a string and returns the node in the Trie that represents the Prefix
         public TrieNode PrefixNode(string input)
         {
             var currentNode = rootNode;
@@ -34,11 +38,14 @@ namespace WebRole1
             return returnNode;
         }
 
+        //Insertion method for Trie. Takes a string and inserts each character into the Trie forming a chain that represents a word
         public void InsertString(string input)
         {
+            //prefix node
             var preNode = PrefixNode(input);
             var currentNode = preNode;
 
+            //for each character in the input
             for (var i = currentNode.NodeDepth; i < input.Length; i++)
             {
                 var newNode = new TrieNode(currentNode, input[i], currentNode.NodeDepth + 1);
@@ -47,22 +54,27 @@ namespace WebRole1
 
             }
 
+            //last node is $ to represent the end of a word
             var endingNode = new TrieNode(currentNode, '$', currentNode.NodeDepth + 1);
+            //add the last node
             currentNode.Children.Add(endingNode);
 
         }
 
+        //Search method to search through the Trie tree and return the list of matching words with the prefix
         public List<string> Search(string input)
         {
 
-            //this might be the same thing as prefix yo 
+
+            //setup the prefix lookup 
             var currentNode = rootNode;
-            //System.Diagnostics.Debug.WriteLine(input);
+            
+            //loop through input
             foreach (var c in input)
             {
-                //System.Diagnostics.Debug.WriteLine("Character:" + c);
+               
                 var newNode = currentNode.SearchChildren(c);
-                //System.Diagnostics.Debug.WriteLine("Node: " + newNode);
+                
                 if (newNode == null)
                 {
                     return null;
@@ -70,36 +82,33 @@ namespace WebRole1
                 currentNode = newNode;
             }
 
+            //set up the list that will be returned 
             List<string> returnList = new List<string>();
 
 
+            //recursively depth first search using the prefix node we found 
             dfs(returnList, currentNode, input.Remove(input.Length - 1));
 
-            /*
-            var returnString = "";
-            foreach(var word in returnList)
-            {
-                returnString = returnString + word + " | ";
-            }
-            */
-
-
+            //return what we get back
             return returnList;
         }
 
+        //DFS method to perform the search while manipulating the list by adding found words 
         public void dfs(List<string> returnList, TrieNode node, string input)
         {
-            //System.Diagnostics.Debug.WriteLine(input);
+           
+            //while we haven't found 10 results
             if (returnList.Count() <= 10)
             {
+                //if we're at the end of a word
                 if (node.NodeValue == '$')
                 {
-                    //System.Diagnostics.Debug.WriteLine("------" + input + "------");
                     if (!returnList.Contains(input))
                     {
                         returnList.Add(input);
                     }
                 }
+                //otherwise keep searching
                 else
                 {
                     input = input + node.NodeValue;

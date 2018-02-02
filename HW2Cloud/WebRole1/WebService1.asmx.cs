@@ -23,11 +23,14 @@ namespace WebRole1
     [System.Web.Script.Services.ScriptService]
     public class WebService1 : System.Web.Services.WebService
     {
-
+        //Trie to be used in the service
         private static Trie trie;
         private string fullPath = "";
+
+        //Performance counter to keep track of memory usage
         private PerformanceCounter memProcess = new PerformanceCounter("Memory", "Available MBytes");
 
+        //Method to download the wiki titles file from the Azure blob
         [WebMethod]
         public string BlobAccess()
         {
@@ -46,34 +49,16 @@ namespace WebRole1
                     {
                         CloudBlockBlob blob = (CloudBlockBlob)item;
 
-                        /*
-                        string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString();
-                        fullPath = Path.Combine(folderPath, "formatted-wiki-titles.txt");
-
-
-                        var fileStream = System.IO.File.OpenWrite(fullPath);
-
-                        using (fileStream)
-                        {
-                            blob.DownloadToStream(fileStream);
-                        }
-                        */
-
-                        System.Diagnostics.Debug.WriteLine("Supposed file name:" + System.IO.Path.GetTempFileName());
-
+                        //override the path
                         fullPath = System.IO.Path.GetTempFileName();
 
-                        System.Diagnostics.Debug.WriteLine("File name override: " + fullPath);
+                        //download the file
                         blob.DownloadToFile(fullPath, FileMode.Create);
-                        System.Diagnostics.Debug.WriteLine("File name override2: " + fullPath);
+                        
                         return fullPath;
 
                     }
                 }
-
-
-
-                //BuildTrie(fullPath);
             }
 
             return fullPath;
@@ -82,17 +67,13 @@ namespace WebRole1
         [WebMethod]
         public string BuildTrie()
         {
+            //initate the trie
             trie = new Trie();
 
-
-            /*
-            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString();
-            fullPath = Path.Combine(folderPath, "formatted-wiki-titles.txt");
-
-            */
+            //get the most updated version of the file
             string path = BlobAccess();
            
-            //System.Diagnostics.Debug.WriteLine("Full Path for build: " + path);
+            //read the file
             using (StreamReader sr = new StreamReader(path))
             {
 
@@ -100,45 +81,29 @@ namespace WebRole1
                 var currentInsertionNum = 0;
                 var lastInserted = "";
                 
-
+                //while memory is above 15mb
                 while (keepRunning)
                 {
-                    //keepRunning = memProcess.NextValue() > 8000;
-
+                   
+                    //check every 10k inserts
                     if (currentInsertionNum % 10000 == 0)
                     {
                         keepRunning = memProcess.NextValue() >= 15;
                     }
 
-                    //System.Diagnostics.Debug.WriteLine("Index: " + currentInsertionNum);
-
-                    //System.Diagnostics.Debug.WriteLine("Memory : " + memProcess.NextValue());
-
-
+                    //current line being read
                     string line = sr.ReadLine();
 
-                    /*
-                    int endIndex = line.LastIndexOf('"');
-                    if (endIndex > 0)
-                    {
-                        line = line.Substring(0, endIndex);
-                    }
-                    line = line.Replace("\"", "");
-                    line = line.Replace("_", " ");
-                    line = line.Replace("0", "");
-                    line = line.Trim();
-                    */
+                    //if the line is not an empty string
                     if (line != "")
                     {
-                        //System.Diagnostics.Debug.WriteLine(i);
-                        //System.Diagnostics.Debug.WriteLine("Inserting:" + '"' + line + '"');
-                        //System.Diagnostics.Debug.WriteLine();
                         trie.InsertString(line);
                         lastInserted = line;
                         currentInsertionNum++;
                     }
 
                 }
+                //return the stats
                 return "Last Inserted String: " + lastInserted +
                     " " + "| Inserted: " + currentInsertionNum +
                     " | Memory Remaining: " + memProcess.NextValue();
@@ -147,36 +112,13 @@ namespace WebRole1
 
         }
 
+        //Method to search the trie with the user input by calling the Search function in Trie.cs
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public List<string> Search(string input)
-        {
-
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+        { 
             var list = trie.Search(input);
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-
-
-            /*
-            foreach (var str in list) 
-            {
-                returnString = returnString + str + " | ";
-            }
-            return returnString;
-            */
-
-            System.Diagnostics.Debug.WriteLine("Time: " + elapsedMs + " ms");
-
             return list;
-
-            /*
-            using (StreamReader sr = new StreamReader(streamPath))
-            {
-
-                return "Hello World " + sr.ReadLine();
-            }
-            */
 
         }
 

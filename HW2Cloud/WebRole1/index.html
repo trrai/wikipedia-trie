@@ -13,13 +13,15 @@
 </body>
 <script>
     var input = document.getElementById('input');
+    //on each keystroke
     input.addEventListener('keyup', function () {
         if (input.value !== "") {
-            console.log(input.value.charAt(0).toUpperCase() + input.value.slice(1).toLowerCase());
+            //handle casing issues by making first character uppercase and rest lowercase
             handleJSON(input.value.charAt(0).toUpperCase() + input.value.slice(1).toLowerCase());
         }
     });
 
+    //function to send the ajax request and append the data appropriately 
     function handleJSON(sInput) {
         
         $.ajax({
@@ -32,9 +34,12 @@
                 
                 $('#results').empty();
 
+                //if results are not returned 
                 if (!eval(msg)["d"]) {
                     $("#results").append("<p> No results found </p>");
-                } else {
+                }
+                //otherwise append the results found
+                else {
                     for (var i in eval(msg)["d"]) {
                         $("#results").append("<p>" + eval(msg)["d"][i] + "</p>");
                     }
